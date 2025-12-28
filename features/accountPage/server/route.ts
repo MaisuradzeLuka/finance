@@ -1,28 +1,23 @@
 import { db } from "@/db";
 import { usersTable } from "@/db/schema";
 import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
+import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 
-const app = new Hono().post("/", clerkMiddleware(), async (c) => {
+const app = new Hono().get("/", clerkMiddleware(), async (c) => {
   const auth = getAuth(c);
 
   if (!auth?.userId) {
     return c.json({ error: "Unauthorised" }, 401);
   }
 
-  const body = await c.req.json();
-
-  if (!body.name) {
-    return c.json({ error: "Missing Data" }, 400);
-  }
-
   try {
     const res = await db
-      .insert(usersTable)
-      .values({ name: body.name, userId: auth.userId })
-      .returning();
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.userId, auth.userId));
 
-    return c.json(res[0]);
+    return c.json(res);
   } catch (error) {
     return c.json({ error: `Internal server error: ${error}` }, 500);
   }

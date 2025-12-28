@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { ChangeEvent, FormEvent, useState } from "react";
+import { usePostAccounts } from "../../api";
 
-const Form = () => {
+const Form = ({ onClose }: { onClose: () => void }) => {
+  const postAccount = usePostAccounts();
   const [accountValue, setAccountValue] = useState("");
   const [error, setError] = useState<null | string>(null);
 
@@ -14,8 +16,19 @@ const Form = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (error) setError(null);
+
     if (!accountValue.trim()) {
       setError("Account name can not be empty");
+
+      return;
+    }
+
+    const res = await postAccount.mutateAsync(accountValue);
+
+    if (res) {
+      setAccountValue("");
+      onClose();
     }
   };
 
