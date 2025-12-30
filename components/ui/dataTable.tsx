@@ -8,6 +8,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  Row,
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
@@ -26,6 +27,7 @@ import { Input } from "./input";
 import { Trash } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
+  onDelete: (rows: Row<TData>[]) => void;
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
@@ -33,6 +35,7 @@ interface DataTableProps<TData, TValue> {
 const DataTable = <TData, TValue>({
   columns,
   data,
+  onDelete,
 }: DataTableProps<TData, TValue>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -55,6 +58,10 @@ const DataTable = <TData, TValue>({
     },
   });
 
+  const handleDelete = async () => {
+    onDelete(table.getFilteredSelectedRowModel().rows);
+  };
+
   return (
     <>
       <div className="flex justify-between items-center py-4 mb-4">
@@ -68,8 +75,12 @@ const DataTable = <TData, TValue>({
         />
 
         {table.getFilteredSelectedRowModel().rows.length ? (
-          <button className="flex items-center gap-2 text-red-500 cursor-pointer">
-            <Trash className="w-4 h-4" /> Delete
+          <button
+            onClick={handleDelete}
+            className="flex items-center gap-2 border border-gray-400 text-gray-600 hover:border-red-500 hover:text-red-500 py-1 px-2 rounded-md cursor-pointer"
+          >
+            <Trash className="w-4 h-4" /> Delete{" "}
+            <span>({table.getFilteredSelectedRowModel().rows.length})</span>
           </button>
         ) : (
           ""

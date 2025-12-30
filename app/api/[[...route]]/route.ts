@@ -4,6 +4,8 @@ import header from "@/features/header/server/route";
 import account from "@/features/account/server/route";
 import accountsPage from "@/features/accountPage/server/route";
 
+export const runtime = "edge";
+
 const app = new Hono().basePath("/api");
 
 const routes = app

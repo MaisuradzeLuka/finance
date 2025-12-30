@@ -24,7 +24,7 @@ const Form = ({ onClose }: { onClose: () => void }) => {
       return;
     }
 
-    const res = await postAccount.mutateAsync(accountValue);
+    const res = await postAccount.mutateAsync({ name: accountValue });
 
     if (res) {
       setAccountValue("");

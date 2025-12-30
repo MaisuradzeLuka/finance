@@ -1,10 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import MobileNav from "../components/MobileNav";
 import DesktopNav from "../components/DesktopNav";
 import { UserButton } from "@clerk/nextjs";
 
-const Header = async () => {
+const Header = () => {
   return (
     <header className="px-4 py-6 bg-linear-to-b from-blue-700 to-blue-500">
       <div className=" max-w-[1440px] mx-auto">
