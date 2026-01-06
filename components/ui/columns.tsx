@@ -6,6 +6,7 @@ import { client } from "@/lib/hono";
 import { ArrowUpDown } from "lucide-react";
 import { InferResponseType } from "hono";
 import { Checkbox } from "./checkbox";
+import EditAccountForm from "@/features/editAccount/ui/views/EditAccountForm";
 
 export type ResponseType = InferResponseType<
   typeof client.api.accountsPage.$get,
@@ -49,6 +50,13 @@ export const columns: ColumnDef<ResponseType>[] = [
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
+    },
+  },
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      return <EditAccountForm id={row.original.id} />;
     },
   },
 ];

@@ -86,6 +86,7 @@ const DataTable = <TData, TValue>({
           ""
         )}
       </div>
+
       <div className="overflow-hidden rounded-md border border-gray-400">
         <Table>
           <TableHeader>
