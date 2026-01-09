@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Sheet,
   SheetContent,
@@ -7,11 +5,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import useCreateCategories from "@/hooks/categoriesHooks";
 import Form from "../components/Form";
-import useCreateAccount from "@/hooks/accountHooks";
 
-const AccountForm = ({ triggerStyles }: { triggerStyles?: string }) => {
-  const { isOpen, onOpen, onClose } = useCreateAccount();
+const CategoriesForm = ({ triggerStyles }: { triggerStyles?: string }) => {
+  const { isOpen, onOpen, onClose } = useCreateCategories();
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => (open ? onOpen() : onClose())}>
@@ -24,7 +22,7 @@ const AccountForm = ({ triggerStyles }: { triggerStyles?: string }) => {
       <SheetContent className="text-center md:text-left bg-white border-none px-6 py-4">
         <SheetTitle className="text-lg">New Account</SheetTitle>
         <SheetDescription>
-          Create a new account to keep tack of your transactions
+          Create a new account to keep track of your transactions
         </SheetDescription>
 
         <Form onClose={onClose} />
@@ -33,4 +31,4 @@ const AccountForm = ({ triggerStyles }: { triggerStyles?: string }) => {
   );
 };
 
-export default AccountForm;
+export default CategoriesForm;

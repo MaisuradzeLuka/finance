@@ -1,11 +1,12 @@
 "use client";
 
-import { columns } from "@/components/ui/columns";
-import DataTable from "@/components/ui/dataTable";
-import AccountForm from "@/features/account/ui/views/AccountForm";
-import { useBulkDeleteAccounts, useGetAccounts } from "../../api";
+import { useBulkDeleteAccounts } from "@/features/acounts/api/index";
+import { useGetAccounts } from "../../api";
+import { columns } from "../components/Columns";
+import DataTable from "../components/DataTable";
+import AccountsForm from "./AccountsForm";
 
-const AccountPage = () => {
+const AccountsPage = () => {
   const { data, isError, isLoading } = useGetAccounts();
   const mutation = useBulkDeleteAccounts();
 
@@ -15,8 +16,8 @@ const AccountPage = () => {
   return (
     <>
       <div className="flex flex-col md:flex-row justify-between">
-        <h2 className="text-3xl font-bold">Account Page</h2>
-        <AccountForm triggerStyles="mt-4 mb-10 w-full md:w-max" />
+        <h2 className="text-3xl font-bold">Accounts Page</h2>
+        <AccountsForm triggerStyles="mt-4 mb-10 w-full md:w-max" />
       </div>
       <DataTable
         columns={columns}
@@ -31,4 +32,4 @@ const AccountPage = () => {
   );
 };
 
-export default AccountPage;
+export default AccountsPage;

@@ -3,7 +3,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { usePostAccounts } from "../../api";
 
 const Form = ({ onClose }: { onClose: () => void }) => {
-  const postAccount = usePostAccounts();
+  const postAccounts = usePostAccounts();
   const [accountValue, setAccountValue] = useState("");
   const [error, setError] = useState<null | string>(null);
 
@@ -24,7 +24,7 @@ const Form = ({ onClose }: { onClose: () => void }) => {
       return;
     }
 
-    const res = await postAccount.mutateAsync({ name: accountValue });
+    const res = await postAccounts.mutateAsync({ name: accountValue });
 
     if (res) {
       setAccountValue("");

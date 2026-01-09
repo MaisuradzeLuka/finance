@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useEditAccount, useGetAccount } from "../../api";
 
-const Form = ({ onClose, id }: { onClose: () => void; id: string }) => {
+const EditForm = ({ onClose, id }: { onClose: () => void; id: string }) => {
   const { data, isLoading, isError } = useGetAccount(id);
   const editAccount = useEditAccount();
 
@@ -65,4 +65,4 @@ const Form = ({ onClose, id }: { onClose: () => void; id: string }) => {
   );
 };
 
-export default Form;
+export default EditForm;

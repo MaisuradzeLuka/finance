@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { usePostCategories } from "../../api";
 
-const Form = ({ onClose, id }: { onClose: () => void; id: string }) => {
+const Form = ({ onClose }: { onClose: () => void }) => {
   const postCategories = usePostCategories();
   const [accountValue, setAccountValue] = useState("");
   const [error, setError] = useState<null | string>(null);

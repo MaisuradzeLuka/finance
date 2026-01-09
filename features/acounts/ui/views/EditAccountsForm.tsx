@@ -7,10 +7,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import Form from "../components/Form";
 import useCreateAccount from "@/hooks/accountHooks";
+import EditForm from "../components/EditForm";
 
-const EditAccountForm = ({
+const EditCategoriesForm = ({
   triggerStyles,
   id,
 }: {
@@ -31,10 +31,10 @@ const EditAccountForm = ({
         <SheetTitle className="text-lg">Edit Account</SheetTitle>
         <SheetDescription>Edit and modify your account </SheetDescription>
 
-        <Form onClose={onClose} id={id} />
+        <EditForm onClose={onClose} id={id} />
       </SheetContent>
     </Sheet>
   );
 };
 
-export default EditAccountForm;
+export default EditCategoriesForm;
