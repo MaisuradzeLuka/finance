@@ -82,6 +82,14 @@ const app = new Hono()
         .with(transactionToGet)
         .select()
         .from(transactionsTable)
+        .leftJoin(
+          categoriesTable,
+          eq(transactionsTable.categoryId, categoriesTable.id)
+        )
+        .innerJoin(
+          accountsTable,
+          eq(transactionsTable.accountId, accountsTable.id)
+        )
         .where(
           eq(transactionsTable.id, sql`(SELECT id FROM transaction_to_get)`)
         )
@@ -91,7 +99,15 @@ const app = new Hono()
         return c.json({ error: "transaction not found" }, 404);
       }
 
-      return c.json(transaction[0]);
+      const formattedResponse = {
+        ...transaction[0].transactions,
+        categoryId: transaction[0].categories?.id,
+        categoryName: transaction[0].categories?.name,
+        accountName: transaction[0].accounts.name,
+        accountId: transaction[0].accounts.id,
+      };
+
+      return c.json(formattedResponse);
     }
   )
   .post(
@@ -174,7 +190,7 @@ const app = new Hono()
   .patch(
     "/",
     clerkMiddleware(),
-    zValidator("json", insertTransactionsSchema.omit({ id: true })),
+    zValidator("json", insertTransactionsSchema),
     async (c) => {
       const auth = getAuth(c);
 
@@ -188,11 +204,28 @@ const app = new Hono()
         return c.json({ error: "Values are required" }, 400);
       }
 
+      const transactionToUpdate = db.$with("transaction_to_update").as(
+        db
+          .select({ id: transactionsTable.id })
+          .from(transactionsTable)
+          .innerJoin(
+            accountsTable,
+            eq(transactionsTable.accountId, accountsTable.id)
+          )
+          .where(
+            and(
+              eq(accountsTable.userId, auth.userId),
+              eq(transactionsTable.id, values.id)
+            )
+          )
+      );
+
       const updatedAccount = await db
-        .update(accountsTable)
-        .set({ values })
+        .with(transactionToUpdate)
+        .update(transactionsTable)
+        .set({ ...values })
         .where(
-          and(eq(accountsTable.userId, auth.userId), eq(accountsTable.id, id))
+          eq(transactionsTable.id, sql`(SELECT id FROM transaction_to_update)`)
         )
         .returning();
 

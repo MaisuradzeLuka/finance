@@ -1,6 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { usePostTransactions } from "../../api";
+import {
+  useEditTransaction,
+  useGetTransaction,
+  usePostTransactions,
+} from "../../api";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -24,14 +28,17 @@ import {
 
 import { transactionFormSchema } from "@/lib/validationSchemas";
 import Amount from "./Amount";
-import { convertToMiliunits } from "@/lib/utils";
+import { convertFromMiliunits, convertToMiliunits } from "@/lib/utils";
+import { useEffect } from "react";
 
 type FormValues = z.input<typeof transactionFormSchema>;
 
-const FormComp = ({ onClose }: { onClose: () => void }) => {
+const FormComp = ({ onClose, id }: { onClose: () => void; id?: string }) => {
   const postTransactions = usePostTransactions();
+  const editTransaction = useEditTransaction();
   const { data: accountsData } = useGetAccounts();
   const { data: categoriesData } = useGetCategories();
+  const { data: transaction } = useGetTransaction(id || "");
 
   const form = useForm<FormValues>({
     resolver: zodResolver(transactionFormSchema),
@@ -45,12 +52,35 @@ const FormComp = ({ onClose }: { onClose: () => void }) => {
     },
   });
 
+  useEffect(() => {
+    if (transaction) {
+      form.reset({
+        date: transaction.date,
+        categoryId: transaction.categoryId ?? "",
+        payee: transaction.payee,
+        amount: convertFromMiliunits(transaction.amount).toString(),
+        accountId: transaction.accountId,
+        notes: transaction.notes ?? "",
+      });
+    }
+  }, [transaction, form]);
+
   const handleSubmit = async (values: FormValues) => {
     const parsedAmount = parseInt(values.amount);
 
     const formattedAmount = convertToMiliunits(parsedAmount);
 
     const formattedValues = { ...values, amount: formattedAmount };
+
+    if (id) {
+      const res = await editTransaction.mutateAsync({ ...formattedValues, id });
+
+      if (res) {
+        form.reset();
+        onClose();
+      }
+      return;
+    }
     const res = await postTransactions.mutateAsync({ ...formattedValues });
     if (res) {
       form.reset();
@@ -195,7 +225,7 @@ const FormComp = ({ onClose }: { onClose: () => void }) => {
             type="submit"
             className="w-full bg-black text-white rounded-md py-3 mt-2 cursor-pointer"
           >
-            Add Transaction
+            {id ? "Edit Transaction" : "Add Transaction"}
           </Button>
         </div>
       </form>

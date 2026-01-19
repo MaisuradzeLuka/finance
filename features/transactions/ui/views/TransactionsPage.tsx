@@ -14,7 +14,7 @@ const TransactionsPage = () => {
   if (isError || !data) return <div>Error loading Transactions.</div>;
 
   return (
-    <>
+    <div className="pageWrapper">
       <div className="flex flex-col md:flex-row justify-between">
         <h2 className="text-3xl font-bold">Transactions Page</h2>
         <AccountsForm triggerStyles="mt-4 mb-10 w-full md:w-max" />
@@ -28,7 +28,7 @@ const TransactionsPage = () => {
           mutation.mutate({ ids });
         }}
       />
-    </>
+    </div>
   );
 };
 

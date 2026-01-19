@@ -1,5 +1,6 @@
 "use client";
 
+import { Form } from "@/components/ui/form";
 import {
   Sheet,
   SheetContent,
@@ -8,8 +9,9 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import useCreateTransaction from "@/hooks/transactionsHools";
+import FormComp from "../components/Form";
 
-const EditCategoriesForm = ({
+const EditTransactionsForm = ({
   triggerStyles,
   id,
 }: {
@@ -30,10 +32,10 @@ const EditCategoriesForm = ({
         <SheetTitle className="text-lg">Edit transaction</SheetTitle>
         <SheetDescription>Edit and modify your transaction </SheetDescription>
 
-        {/* <EditForm onClose={onClose} id={id} /> */}
+        <FormComp onClose={onClose} id={id} />
       </SheetContent>
     </Sheet>
   );
 };
 
-export default EditCategoriesForm;
+export default EditTransactionsForm;

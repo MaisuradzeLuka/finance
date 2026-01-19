@@ -6,7 +6,7 @@ import { ArrowUpDown } from "lucide-react";
 import { InferResponseType } from "hono";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import EditAccountsForm from "../views/EditTransactionsForm";
+import EditTransactionsForm from "../views/EditTransactionsForm";
 import { convertFromMiliunits, isAmountNegative } from "@/lib/utils";
 
 export type ResponseType = InferResponseType<
@@ -140,7 +140,7 @@ export const columns: ColumnDef<ResponseType>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      return <EditAccountsForm id={row.original.id} />;
+      return <EditTransactionsForm id={row.original.id} />;
     },
   },
 ];

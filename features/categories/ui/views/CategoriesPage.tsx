@@ -13,7 +13,7 @@ const CategoriesPage = () => {
   if (isError || !data) return <div>Error loading accounts.</div>;
 
   return (
-    <>
+    <div className="pageWrapper">
       <div className="flex flex-col md:flex-row justify-between">
         <h2 className="text-3xl font-bold">Categories Page</h2>
         <CategoriesForm triggerStyles="mt-4 mb-10 w-full md:w-max" />
@@ -27,7 +27,7 @@ const CategoriesPage = () => {
           mutation.mutate({ ids });
         }}
       />
-    </>
+    </div>
   );
 };
 

@@ -22,6 +22,7 @@ export const useGetTransactions = () => {
 
 export const useGetTransaction = (id: string) => {
   const query = useQuery({
+    enabled: !!id,
     queryKey: ["transaction", { id }],
     queryFn: async () => {
       const res = await client.api.transactions[":id"].$get({ param: { id } });

@@ -1,2 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+
+.pageWrapper {
+  @apply max-w-[1240px] mx-4 -mt-14 xl:mx-auto bg-white rounded-lg px-4 md:px-8 py-12 shadow-lg;
+}

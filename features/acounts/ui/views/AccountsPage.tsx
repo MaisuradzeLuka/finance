@@ -14,7 +14,7 @@ const AccountsPage = () => {
   if (isError || !data) return <div>Error loading accounts.</div>;
 
   return (
-    <>
+    <div className="pageWrapper">
       <div className="flex flex-col md:flex-row justify-between">
         <h2 className="text-3xl font-bold">Accounts Page</h2>
         <AccountsForm triggerStyles="mt-4 mb-10 w-full md:w-max" />
@@ -28,7 +28,7 @@ const AccountsPage = () => {
           mutation.mutate({ ids });
         }}
       />
-    </>
+    </div>
   );
 };
 
