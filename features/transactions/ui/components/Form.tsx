@@ -224,6 +224,7 @@ const FormComp = ({ onClose, id }: { onClose: () => void; id?: string }) => {
           <Button
             type="submit"
             className="w-full bg-black text-white rounded-md py-3 mt-2 cursor-pointer"
+            disabled={postTransactions.isPending}
           >
             {id ? "Edit Transaction" : "Add Transaction"}
           </Button>

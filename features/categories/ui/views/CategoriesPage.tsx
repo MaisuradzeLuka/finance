@@ -1,6 +1,7 @@
 "use client";
 
 import { useBulkDeleteCategories, useGetCategories } from "../../api";
+import CategoriesSkeleton from "../components/CategoriesSkeleton";
 import { columns } from "../components/Columns";
 import DataTable from "../components/DataTable";
 import CategoriesForm from "./CategoriesForm";
@@ -9,7 +10,7 @@ const CategoriesPage = () => {
   const { data, isError, isLoading } = useGetCategories();
   const mutation = useBulkDeleteCategories();
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <CategoriesSkeleton />;
   if (isError || !data) return <div>Error loading accounts.</div>;
 
   return (

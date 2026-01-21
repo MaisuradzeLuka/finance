@@ -58,7 +58,11 @@ const EditForm = ({ onClose, id }: { onClose: () => void; id: string }) => {
 
       {error && <p className="text-red-500">{error}</p>}
 
-      <Button type="submit" className="bg-black text-white mt-2 cursor-pointer">
+      <Button
+        disabled={editAccount.isPending}
+        type="submit"
+        className="bg-black text-white mt-2 cursor-pointer"
+      >
         Edit Account
       </Button>
     </form>

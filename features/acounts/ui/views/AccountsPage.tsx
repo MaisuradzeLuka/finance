@@ -5,12 +5,13 @@ import { useGetAccounts } from "../../api";
 import { columns } from "../components/Columns";
 import DataTable from "../components/DataTable";
 import AccountsForm from "./AccountsForm";
+import AccountsSkeleton from "../components/AccountsSkeleton";
 
 const AccountsPage = () => {
   const { data, isError, isLoading } = useGetAccounts();
   const mutation = useBulkDeleteAccounts();
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <AccountsSkeleton />;
   if (isError || !data) return <div>Error loading accounts.</div>;
 
   return (

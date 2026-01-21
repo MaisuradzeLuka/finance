@@ -23,7 +23,7 @@ type Props = {
 };
 
 const Amount = ({ field }: Props) => {
-  const [isExpense, setIsExpense] = useState(false);
+  const [isExpense, setIsExpense] = useState(+field.value < 0);
 
   const handleClick = () => {
     setIsExpense((prev) => !prev);

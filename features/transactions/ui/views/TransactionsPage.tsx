@@ -5,12 +5,13 @@ import { useGetTransactions } from "../../api";
 import { columns } from "../components/Columns";
 import DataTable from "../components/DataTable";
 import AccountsForm from "./TransactionsForm";
+import TransactionsSkeleton from "../components/TransactionsSkeleton";
 
 const TransactionsPage = () => {
   const { data, isError, isLoading } = useGetTransactions();
   const mutation = useBulkDeleteTransactions();
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <TransactionsSkeleton />;
   if (isError || !data) return <div>Error loading Transactions.</div>;
 
   return (

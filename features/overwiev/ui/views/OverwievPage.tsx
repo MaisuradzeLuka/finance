@@ -6,11 +6,12 @@ import OverviewCard from "../components/OverviewCard";
 import { HandCoins, TrendingDown, TrendingUp } from "lucide-react";
 import AreaChart from "../components/AreaChart";
 import PieChartComp from "../components/PieChartComp";
+import OverwievSkeleton from "../components/OverwievSkeleton";
 
 const OverwievPage = () => {
   const { data, isError, isLoading } = useGetOverviewData();
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <OverwievSkeleton />;
   if (isError || !data) return <div>Error loading accounts.</div>;
 
   return (

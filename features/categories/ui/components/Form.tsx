@@ -54,8 +54,9 @@ const Form = ({ onClose }: { onClose: () => void }) => {
         variant="destructive"
         type="submit"
         className="bg-black cursor-pointer mt-2"
+        disabled={postCategories.isPending}
       >
-        Add Account
+        Add Category
       </Button>
     </form>
   );

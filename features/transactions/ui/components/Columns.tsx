@@ -7,7 +7,11 @@ import { InferResponseType } from "hono";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import EditTransactionsForm from "../views/EditTransactionsForm";
-import { convertFromMiliunits, isAmountNegative } from "@/lib/utils";
+import {
+  convertFromMiliunits,
+  formatAmount,
+  isAmountNegative,
+} from "@/lib/utils";
 
 export type ResponseType = InferResponseType<
   typeof client.api.transactions.$get,
@@ -107,11 +111,13 @@ export const columns: ColumnDef<ResponseType>[] = [
 
       return (
         <span
-          className={`w-max px-6 py-1.5 rounded-full ${
-            isNegative ? "bg-red-100 text-red-700" : "bg-blue-100 text-blue-700"
+          className={`w-max px-6 py-1.5 rounded-full font-medium ${
+            isNegative
+              ? "bg-[#fff0f0] text-red-700"
+              : "bg-[#e6f0ff] text-blue-700"
           }`}
         >
-          &#36;{formattedAmount}
+          {formatAmount(formattedAmount)}
         </span>
       );
     },
