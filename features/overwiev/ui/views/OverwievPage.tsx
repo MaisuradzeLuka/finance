@@ -4,6 +4,8 @@ import { convertFromMiliunits } from "@/lib/utils";
 import { useGetOverviewData } from "../../api";
 import OverviewCard from "../components/OverviewCard";
 import { HandCoins, TrendingDown, TrendingUp } from "lucide-react";
+import AreaChart from "../components/AreaChart";
+import PieChartComp from "../components/PieChartComp";
 
 const OverwievPage = () => {
   const { data, isError, isLoading } = useGetOverviewData();
@@ -11,10 +13,8 @@ const OverwievPage = () => {
   if (isLoading) return <div>Loading...</div>;
   if (isError || !data) return <div>Error loading accounts.</div>;
 
-  console.log(data);
-
   return (
-    <div className="pageWrapper bg-transparent! shadow-none! -mt-20!">
+    <div className="pageWrapper bg-transparent! shadow-none! -mt-20! mb-[200px]">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <OverviewCard
           title="Remaining"
@@ -40,6 +40,11 @@ const OverwievPage = () => {
           startDate={data.from}
           endDate={data.to}
         />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-5 gap-8 lg:gap-16 ">
+        <AreaChart transactions={data.transactions} />
+        <PieChartComp data={data.spendingsByCategory} />
       </div>
     </div>
   );

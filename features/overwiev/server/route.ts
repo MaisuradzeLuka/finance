@@ -1,8 +1,13 @@
 import { db } from "@/db";
-import { accountsTable, insertSchema, transactionsTable } from "@/db/schema";
+import {
+  accountsTable,
+  categoriesTable,
+  insertSchema,
+  transactionsTable,
+} from "@/db/schema";
 import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
 import { zValidator } from "@hono/zod-validator";
-import { and, eq, gte, inArray, lte, sql, sum } from "drizzle-orm";
+import { and, desc, eq, gte, inArray, lte, sql, sum } from "drizzle-orm";
 import { Hono } from "hono";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod/v4";
@@ -80,6 +85,65 @@ const app = new Hono().get("/", clerkMiddleware(), async (c) => {
     currentPeriod.income,
   );
 
+  const transactions = await db
+    .select({
+      income:
+        sql`CASE WHEN ${transactionsTable.amount} >= 0 THEN ${transactionsTable.amount} ELSE 0 END`.mapWith(
+          Number,
+        ),
+      expenses:
+        sql`CASE WHEN ${transactionsTable.amount} < 0 THEN ${transactionsTable.amount} ELSE 0 END`.mapWith(
+          Number,
+        ),
+      date: transactionsTable.date,
+    })
+    .from(transactionsTable)
+    .innerJoin(accountsTable, eq(transactionsTable.accountId, accountsTable.id))
+    .where(
+      and(
+        eq(accountsTable.userId, auth.userId),
+        gte(transactionsTable.date, currentFrom),
+        lte(transactionsTable.date, currentTo),
+      ),
+    );
+
+  const spendingsByCategory = await db
+    .select({
+      categoryName: categoriesTable.name,
+      total:
+        sql`SUM(CASE WHEN ${transactionsTable.amount} < 0 THEN ABS(${transactionsTable.amount}) ELSE 0 END)`.mapWith(
+          Number,
+        ),
+    })
+    .from(transactionsTable)
+    .innerJoin(accountsTable, eq(transactionsTable.accountId, accountsTable.id))
+    .innerJoin(
+      categoriesTable,
+      eq(transactionsTable.categoryId, categoriesTable.id),
+    )
+    .where(
+      and(
+        eq(accountsTable.userId, auth.userId),
+        gte(transactionsTable.date, currentFrom),
+        lte(transactionsTable.date, currentTo),
+      ),
+    )
+    .groupBy(categoriesTable.id, categoriesTable.name)
+    .orderBy(
+      desc(
+        sql`ABS(SUM (CASE WHEN ${transactionsTable.amount} < 0 THEN ${transactionsTable.amount} ELSE 0 END))`,
+      ),
+    );
+
+  const topCategories = spendingsByCategory.slice(0, 3);
+  const otherCategories = spendingsByCategory.slice(3);
+  const otherSum = otherCategories.reduce((acc, curr) => acc + curr.total, 0);
+
+  const formatedCategories = topCategories;
+  if (otherCategories.length) {
+    formatedCategories.push({ categoryName: "Other", total: otherSum });
+  }
+
   return c.json({
     currentPeriod,
     previousPeriod,
@@ -90,6 +154,8 @@ const app = new Hono().get("/", clerkMiddleware(), async (c) => {
     },
     from: currentFrom,
     to: currentTo,
+    transactions,
+    spendingsByCategory: formatedCategories,
   });
 });
 
