@@ -33,6 +33,9 @@ export const useGetTransaction = (id: string) => {
 
       return await res.json();
     },
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: "always",
   });
 
   return query;
@@ -120,6 +123,7 @@ export const useEditTransaction = () => {
 
       return await res.json();
     },
+
     onSuccess: () => {
       toast.success("Transaction edited successfully");
       queryClient.invalidateQueries({ queryKey: ["transactions"] });

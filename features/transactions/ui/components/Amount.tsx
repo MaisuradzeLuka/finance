@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/tooltip";
 import { BanknoteArrowDown, BanknoteArrowUp } from "lucide-react";
 import { useState } from "react";
-import { ControllerRenderProps } from "react-hook-form";
+import { ControllerRenderProps, UseFormSetValue } from "react-hook-form";
 
 type Props = {
   field: ControllerRenderProps<
@@ -20,17 +20,21 @@ type Props = {
     },
     "amount"
   >;
+  setValue: UseFormSetValue<{
+    amount: string;
+    date: string;
+    payee: string;
+    accountId: string;
+    categoryId?: string | undefined;
+    notes?: string | undefined;
+  }>;
 };
 
-const Amount = ({ field }: Props) => {
-  const [isExpense, setIsExpense] = useState(+field.value < 0);
+const Amount = ({ field, setValue }: Props) => {
+  const isExpense = +field.value < 0;
 
   const handleClick = () => {
-    setIsExpense((prev) => !prev);
-
-    const value = field.value;
-
-    field.onChange(isExpense ? value.replace("-", "") : `-${value}`);
+    setValue("amount", (+field.value * -1).toString());
   };
 
   return (

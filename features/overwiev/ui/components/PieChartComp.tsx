@@ -8,8 +8,6 @@ const PieChartComp = ({ data }: Props) => {
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
   const totalSum = data.reduce((acc, cur) => acc + cur.total, 0);
 
-  console.log(data);
-
   return (
     <div className="w-full xl:col-span-2 h-80 ">
       <h3 className="text-xl mt-12 font-medium mb-2">Categories</h3>

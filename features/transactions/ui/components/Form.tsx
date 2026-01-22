@@ -41,7 +41,7 @@ const FormComp = ({ onClose, id }: { onClose: () => void; id?: string }) => {
   const { data: transaction } = useGetTransaction(id || "");
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(transactionFormSchema),
+    // resolver: zodResolver(transactionFormSchema),
     defaultValues: {
       date: "",
       categoryId: "",
@@ -66,9 +66,7 @@ const FormComp = ({ onClose, id }: { onClose: () => void; id?: string }) => {
   }, [transaction, form]);
 
   const handleSubmit = async (values: FormValues) => {
-    const parsedAmount = parseInt(values.amount);
-
-    const formattedAmount = convertToMiliunits(parsedAmount);
+    const formattedAmount = convertToMiliunits(Number(values.amount));
 
     const formattedValues = { ...values, amount: formattedAmount };
 
@@ -137,12 +135,13 @@ const FormComp = ({ onClose, id }: { onClose: () => void; id?: string }) => {
             <FormItem>
               <FormLabel>Amount</FormLabel>
               <FormControl>
-                <Amount field={field} />
+                <Amount field={field} setValue={form.setValue} />
               </FormControl>
               <FormMessage className="text-left -mb-2 mt-1 text-red-500" />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="accountId"

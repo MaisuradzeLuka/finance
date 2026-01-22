@@ -5,8 +5,6 @@ import accounts from "@/features/acounts/server/route";
 import transactions from "@/features/transactions/server/route";
 import overview from "@/features/overwiev/server/route";
 
-export const runtime = "edge";
-
 const app = new Hono().basePath("/api");
 
 const routes = app

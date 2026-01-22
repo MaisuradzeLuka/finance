@@ -32,7 +32,7 @@ const EditTransactionsForm = ({
         <SheetTitle className="text-lg">Edit transaction</SheetTitle>
         <SheetDescription>Edit and modify your transaction </SheetDescription>
 
-        <FormComp onClose={onClose} id={id} />
+        <FormComp key={id ?? "new"} onClose={onClose} id={id} />
       </SheetContent>
     </Sheet>
   );
