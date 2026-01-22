@@ -4,7 +4,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { client } from "@/lib/hono";
 import { ArrowUpDown } from "lucide-react";
 import { InferResponseType } from "hono";
-import EditAccountForm from "@/features/editAccount/ui/views/EditAccountForm";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import EditCategoriesForm from "../views/EditCategoriesForm";
