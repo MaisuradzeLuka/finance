@@ -10,6 +10,7 @@ import EditTransactionsForm from "../views/EditTransactionsForm";
 import {
   convertFromMiliunits,
   formatAmount,
+  formatMonthYear,
   isAmountNegative,
 } from "@/lib/utils";
 
@@ -37,6 +38,7 @@ export const columns: ColumnDef<ResponseType>[] = [
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
+        className="cursor-pointer"
       />
     ),
     enableSorting: false,
@@ -55,6 +57,9 @@ export const columns: ColumnDef<ResponseType>[] = [
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
+    },
+    cell: ({ row }) => {
+      return <span>{formatMonthYear(row.original.date)}</span>;
     },
   },
   {
@@ -87,7 +92,7 @@ export const columns: ColumnDef<ResponseType>[] = [
       );
     },
     cell: ({ row }) => {
-      return <span className="block text-center">{row.original.payee}</span>;
+      return <span>{row.original.payee}</span>;
     },
   },
   {
@@ -137,9 +142,7 @@ export const columns: ColumnDef<ResponseType>[] = [
       );
     },
     cell: ({ row }) => {
-      return (
-        <span className="block text-center">{row.original.accountName}</span>
-      );
+      return <span>{row.original.accountName}</span>;
     },
   },
   {

@@ -94,13 +94,16 @@ const DataTable = <TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
-                className="text-gray-500 font-medium border-gray-400"
+                className="text-gray-700 font-medium border-gray-400"
               >
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="px-10 py-2">
+                  <TableHead
+                    key={header.id}
+                    className="px-10 py-2 bg-slate-300"
+                  >
                     {flexRender(
                       header.column.columnDef.header,
-                      header.getContext()
+                      header.getContext(),
                     )}
                   </TableHead>
                 ))}
@@ -120,7 +123,7 @@ const DataTable = <TData, TValue>({
                     <TableCell key={cell.id} className="px-10">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

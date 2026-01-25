@@ -8,7 +8,8 @@ import {
 } from "@/db/schema";
 import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
 import { zValidator } from "@hono/zod-validator";
-import { and, desc, eq, inArray, sql } from "drizzle-orm";
+import { format, subDays } from "date-fns";
+import { and, desc, eq, gte, inArray, lte, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod/v4";
@@ -21,16 +22,23 @@ const app = new Hono()
       return c.json({ error: "Unauthorized" }, 401);
     }
 
+    const to = format(new Date(), "yyyy-MM-dd");
+
+    const from = format(subDays(new Date(), 30), "yyyy-MM-dd");
+
     const transactions = await db
       .select()
       .from(transactionsTable)
       .leftJoin(
         categoriesTable,
-        eq(transactionsTable.categoryId, categoriesTable.id)
+        eq(transactionsTable.categoryId, categoriesTable.id),
       )
       .innerJoin(
         accountsTable,
-        eq(transactionsTable.accountId, accountsTable.id)
+        eq(transactionsTable.accountId, accountsTable.id),
+      )
+      .where(
+        and(gte(transactionsTable.date, from), lte(transactionsTable.date, to)),
       )
       .orderBy(desc(transactionsTable.date));
 
@@ -68,14 +76,14 @@ const app = new Hono()
           .from(transactionsTable)
           .innerJoin(
             accountsTable,
-            eq(transactionsTable.accountId, accountsTable.id)
+            eq(transactionsTable.accountId, accountsTable.id),
           )
           .where(
             and(
               eq(accountsTable.userId, auth.userId),
-              eq(transactionsTable.id, id)
-            )
-          )
+              eq(transactionsTable.id, id),
+            ),
+          ),
       );
 
       const transaction = await db
@@ -84,14 +92,14 @@ const app = new Hono()
         .from(transactionsTable)
         .leftJoin(
           categoriesTable,
-          eq(transactionsTable.categoryId, categoriesTable.id)
+          eq(transactionsTable.categoryId, categoriesTable.id),
         )
         .innerJoin(
           accountsTable,
-          eq(transactionsTable.accountId, accountsTable.id)
+          eq(transactionsTable.accountId, accountsTable.id),
         )
         .where(
-          eq(transactionsTable.id, sql`(SELECT id FROM transaction_to_get)`)
+          eq(transactionsTable.id, sql`(SELECT id FROM transaction_to_get)`),
         )
         .limit(1);
 
@@ -108,7 +116,7 @@ const app = new Hono()
       };
 
       return c.json(formattedResponse);
-    }
+    },
   )
   .post(
     "/",
@@ -137,7 +145,7 @@ const app = new Hono()
       }
 
       return c.json(newTransaction[0]);
-    }
+    },
   )
   .post(
     "/bulk-delete",
@@ -164,9 +172,9 @@ const app = new Hono()
             .from(transactionsTable)
             .innerJoin(
               accountsTable,
-              eq(transactionsTable.accountId, accountsTable.id)
+              eq(transactionsTable.accountId, accountsTable.id),
             )
-            .where(inArray(transactionsTable.id, ids))
+            .where(inArray(transactionsTable.id, ids)),
         );
 
       const deletedAccounts = await db
@@ -175,8 +183,8 @@ const app = new Hono()
         .where(
           inArray(
             transactionsTable.id,
-            sql`(SELECT id FROM transactions_to_delete)`
-          )
+            sql`(SELECT id FROM transactions_to_delete)`,
+          ),
         )
         .returning();
 
@@ -185,7 +193,7 @@ const app = new Hono()
       }
 
       return c.json({ success: true });
-    }
+    },
   )
   .patch(
     "/",
@@ -210,14 +218,14 @@ const app = new Hono()
           .from(transactionsTable)
           .innerJoin(
             accountsTable,
-            eq(transactionsTable.accountId, accountsTable.id)
+            eq(transactionsTable.accountId, accountsTable.id),
           )
           .where(
             and(
               eq(accountsTable.userId, auth.userId),
-              eq(transactionsTable.id, values.id)
-            )
-          )
+              eq(transactionsTable.id, values.id),
+            ),
+          ),
       );
 
       const updatedAccount = await db
@@ -225,7 +233,10 @@ const app = new Hono()
         .update(transactionsTable)
         .set({ ...values })
         .where(
-          eq(transactionsTable.id, sql`(SELECT id FROM transaction_to_update)`)
+          eq(
+            transactionsTable.id,
+            sql`(SELECT id FROM ${transactionToUpdate})`,
+          ),
         )
         .returning();
 
@@ -234,7 +245,7 @@ const app = new Hono()
       }
 
       return c.json({ success: true });
-    }
+    },
   );
 
 export default app;
