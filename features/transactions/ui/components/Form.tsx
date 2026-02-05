@@ -41,7 +41,7 @@ const FormComp = ({ onClose, id }: { onClose: () => void; id?: string }) => {
   const { data: transaction } = useGetTransaction(id || "");
 
   const form = useForm<FormValues>({
-    // resolver: zodResolver(transactionFormSchema),
+    resolver: zodResolver(transactionFormSchema),
     defaultValues: {
       date: "",
       categoryId: "",
@@ -68,7 +68,11 @@ const FormComp = ({ onClose, id }: { onClose: () => void; id?: string }) => {
   const handleSubmit = async (values: FormValues) => {
     const formattedAmount = convertToMiliunits(Number(values.amount));
 
-    const formattedValues = { ...values, amount: formattedAmount };
+    const formattedValues = {
+      ...values,
+      amount: formattedAmount,
+      categoryId: values.categoryId ? values.categoryId : null,
+    };
 
     if (id) {
       const res = await editTransaction.mutateAsync({ ...formattedValues, id });

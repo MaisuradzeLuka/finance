@@ -53,7 +53,7 @@ export const transactionsRelations = relations(
       fields: [transactionsTable.categoryId],
       references: [categoriesTable.id],
     }),
-  })
+  }),
 );
 
 export const insertTransactionsSchema = createInsertSchema(transactionsTable);
