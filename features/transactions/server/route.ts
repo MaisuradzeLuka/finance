@@ -38,7 +38,11 @@ const app = new Hono()
         eq(transactionsTable.accountId, accountsTable.id),
       )
       .where(
-        and(gte(transactionsTable.date, from), lte(transactionsTable.date, to)),
+        and(
+          eq(accountsTable.userId, auth.userId),
+          gte(transactionsTable.date, from),
+          lte(transactionsTable.date, to),
+        ),
       )
       .orderBy(desc(transactionsTable.date));
 

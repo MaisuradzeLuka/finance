@@ -1,13 +1,6 @@
 import { convertFromMiliunits } from "@/lib/utils";
 import { formatDate } from "date-fns";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-} from "recharts";
+import { AreaChart, Area, XAxis, CartesianGrid, Tooltip } from "recharts";
 
 type Props = {
   transactions: { income: number; expenses: number; date: string }[];
