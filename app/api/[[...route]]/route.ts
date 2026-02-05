@@ -4,6 +4,7 @@ import categories from "@/features/categories/server/route";
 import accounts from "@/features/acounts/server/route";
 import transactions from "@/features/transactions/server/route";
 import overview from "@/features/overwiev/server/route";
+import guestSignIn from "@/features/guestSignIn/server/route";
 
 const app = new Hono().basePath("/api");
 
@@ -11,7 +12,8 @@ const routes = app
   .route("/accounts", accounts)
   .route("/categories", categories)
   .route("/overview", overview)
-  .route("/transactions", transactions);
+  .route("/transactions", transactions)
+  .route("/guestsignin", guestSignIn);
 
 export const GET = handle(app);
 export const POST = handle(app);
