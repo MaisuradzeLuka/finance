@@ -1,16 +1,9 @@
 import { db } from "@/db";
-import {
-  accountsTable,
-  categoriesTable,
-  insertSchema,
-  transactionsTable,
-} from "@/db/schema";
+import { accountsTable, categoriesTable, transactionsTable } from "@/db/schema";
 import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
-import { zValidator } from "@hono/zod-validator";
-import { and, desc, eq, gte, inArray, lte, sql, sum } from "drizzle-orm";
+import { and, desc, eq, gte, lte, sql, sum } from "drizzle-orm";
 import { Hono } from "hono";
-import { v4 as uuidv4 } from "uuid";
-import { z } from "zod/v4";
+
 import { format, subDays } from "date-fns";
 import { calculateChange } from "@/lib/utils";
 
@@ -22,14 +15,16 @@ const fetchOverviewDataByDate = async (
   const transactions = await db
     .select({
       expense:
-        sql`SUM(CASE WHEN ${transactionsTable.amount} < 0 THEN ${transactionsTable.amount} ELSE 0 END)`.mapWith(
+        sql`COALESCE(SUM(CASE WHEN ${transactionsTable.amount} < 0 THEN ${transactionsTable.amount} ELSE 0 END), 0)`.mapWith(
           Number,
         ),
       income:
-        sql`SUM(CASE WHEN ${transactionsTable.amount} >= 0 THEN ${transactionsTable.amount} ELSE 0 END)`.mapWith(
+        sql`COALESCE(SUM(CASE WHEN ${transactionsTable.amount} >= 0 THEN ${transactionsTable.amount} ELSE 0 END), 0)`.mapWith(
           Number,
         ),
-      remaining: sum(transactionsTable.amount).mapWith(Number),
+      remaining: sql`COALESCE(SUM(${transactionsTable.amount}), 0)`.mapWith(
+        Number,
+      ),
     })
     .from(transactionsTable)
     .innerJoin(accountsTable, eq(transactionsTable.accountId, accountsTable.id))
